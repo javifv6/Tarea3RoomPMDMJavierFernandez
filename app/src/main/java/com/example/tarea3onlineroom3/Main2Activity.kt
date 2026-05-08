@@ -8,6 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * Actividad para la gestión de autenticación con Firebase (Ejercicio 2).
+ * Permite a los usuarios registrarse e iniciar sesión con correo y contraseña.
+ * Tras un acceso exitoso, redirige a la gestión de herramientas ([HerramientasActivity]).
+ */
 class Main2Activity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
@@ -19,6 +24,7 @@ class Main2Activity : AppCompatActivity() {
         // Inicializamos Firebase Auth
         auth = FirebaseAuth.getInstance()
 
+        // Referencias a los componentes de la interfaz
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
@@ -27,8 +33,8 @@ class Main2Activity : AppCompatActivity() {
 
         // Lógica de Inicio de Sesión
         btnLogin.setOnClickListener {
-            val email = etEmail.text.toString()
-            val password = etPassword.text.toString()
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
@@ -46,10 +52,10 @@ class Main2Activity : AppCompatActivity() {
             }
         }
 
-        // Lógica de Registro de Usuario
+        // Lógica de Registro de nuevo usuario
         btnRegistro.setOnClickListener {
-            val email = etEmail.text.toString()
-            val password = etPassword.text.toString()
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->

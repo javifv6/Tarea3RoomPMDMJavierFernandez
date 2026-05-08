@@ -19,12 +19,18 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+/**
+ * Actividad para la gestión de reservas de hípica (Ejercicio 1).
+ * Permite crear, listar, buscar y borrar reservas usando Room.
+ * Restringe los paseos a sábados/domingos a las 10:00 o 11:00.
+ */
 class Main1Activity : AppCompatActivity() {
 
     private val viewModel: ReservaViewModel by viewModels()
 
     private lateinit var adapter: ReservaAdapter
 
+    // Referencias a los componentes de la interfaz
     private lateinit var etJinete: EditText
     private lateinit var etMovil: EditText
     private lateinit var etCaballo: EditText
@@ -40,8 +46,10 @@ class Main1Activity : AppCompatActivity() {
     private var fechaSeleccionada = ""
     private var horaSeleccionada = ""
 
+    // Almacena la reserva que se está editando actualmente (si existe)
     private var reservaEnEdicion: Reserva? = null
 
+    // Formateadores para manejar fechas de forma interna (ordenables) y externa (legibles)
     private val formatoBD = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val formatoMostrar = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
@@ -55,8 +63,8 @@ class Main1Activity : AppCompatActivity() {
         configurarEventos()
     }
 
+    /** Vincula las variables con las vistas del XML */
     private fun inicializarVistas() {
-
         etJinete = findViewById(R.id.etJinete)
         etMovil = findViewById(R.id.etMovil)
         etCaballo = findViewById(R.id.etCaballo)
@@ -70,36 +78,27 @@ class Main1Activity : AppCompatActivity() {
         btnAtras = findViewById(R.id.btnAtras)
     }
 
+    /** Configura el RecyclerView con su adaptador y los eventos de borrar/editar */
     private fun configurarRecyclerView() {
-
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
         adapter = ReservaAdapter(
             emptyList(),
-
             onBorrarClick = { reserva ->
-
+                // Confirmación antes de borrar
                 AlertDialog.Builder(this)
                     .setTitle("Eliminar reserva")
                     .setMessage("¿Seguro que quieres eliminar esta reserva?")
                     .setPositiveButton("Sí") { _, _ ->
-
                         viewModel.borrar(reserva)
-
-                        Toast.makeText(
-                            this,
-                            "Reserva eliminada",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, "Reserva eliminada", Toast.LENGTH_SHORT).show()
                     }
                     .setNegativeButton("No", null)
                     .show()
             },
-
             onEditarClick = { reserva ->
-
+                // Carga los datos de la reserva en el formulario para editar
                 reservaEnEdicion = reserva
-
                 etJinete.setText(reserva.nombreJinete)
                 etMovil.setText(reserva.movil)
                 etCaballo.setText(reserva.nombreCaballo)
@@ -119,170 +118,92 @@ class Main1Activity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
+    /** Observa el flujo de reservas del ViewModel para actualizar la lista automáticamente */
     private fun observarReservas() {
-
         lifecycleScope.launch {
-
             viewModel.todasLasReservas.collect { reservas ->
-
                 adapter.actualizarLista(reservas)
             }
         }
     }
 
+    /** Configura los listeners de los botones */
     private fun configurarEventos() {
-
-        btnFecha.setOnClickListener {
-            mostrarSelectorFecha()
-        }
-
-        btnHora.setOnClickListener {
-            mostrarSelectorHora()
-        }
-
-        btnGuardar.setOnClickListener {
-            guardarReserva()
-        }
-
-        btnBuscar.setOnClickListener {
-            buscarReservas()
-        }
-
+        btnFecha.setOnClickListener { mostrarSelectorFecha() }
+        btnHora.setOnClickListener { mostrarSelectorHora() }
+        btnGuardar.setOnClickListener { guardarReserva() }
+        btnBuscar.setOnClickListener { buscarReservas() }
         btnMostrarTodas.setOnClickListener {
-
+            // Recarga todas las reservas ignorando el filtro de búsqueda previo
             lifecycleScope.launch {
-
                 viewModel.todasLasReservas.collect { reservas ->
-
                     adapter.actualizarLista(reservas)
                 }
             }
         }
-
-        btnAtras.setOnClickListener {
-            finish()
-        }
+        btnAtras.setOnClickListener { finish() }
     }
 
+    /** Muestra un DatePickerDialog restringiendo a sábados y domingos */
     private fun mostrarSelectorFecha() {
-
         val calendario = Calendar.getInstance()
-
         DatePickerDialog(
             this,
-
             { _, year, month, dayOfMonth ->
-
                 val fecha = Calendar.getInstance()
-
                 fecha.set(year, month, dayOfMonth)
-
                 val diaSemana = fecha.get(Calendar.DAY_OF_WEEK)
 
-                if (diaSemana != Calendar.SATURDAY &&
-                    diaSemana != Calendar.SUNDAY
-                ) {
-
-                    Toast.makeText(
-                        this,
-                        "Solo se permiten reservas en sábado o domingo",
-                        Toast.LENGTH_LONG
-                    ).show()
-
+                // Validación de fin de semana
+                if (diaSemana != Calendar.SATURDAY && diaSemana != Calendar.SUNDAY) {
+                    Toast.makeText(this, "Solo se permiten reservas en sábado o domingo", Toast.LENGTH_LONG).show()
                     return@DatePickerDialog
                 }
 
                 fechaSeleccionada = formatoBD.format(fecha.time)
-
-                btnFecha.text =
-                    formatoMostrar.format(fecha.time)
+                btnFecha.text = formatoMostrar.format(fecha.time)
             },
-
             calendario.get(Calendar.YEAR),
             calendario.get(Calendar.MONTH),
             calendario.get(Calendar.DAY_OF_MONTH)
-
         ).show()
     }
 
+    /** Muestra un TimePickerDialog restringiendo a las 10:00 y 11:00 */
     private fun mostrarSelectorHora() {
-
         TimePickerDialog(
             this,
-
             { _, hourOfDay, minute ->
-
-                if ((hourOfDay == 10 || hourOfDay == 11)
-                    && minute == 0
-                ) {
-
-                    horaSeleccionada =
-                        String.format("%02d:%02d", hourOfDay, minute)
-
+                if ((hourOfDay == 10 || hourOfDay == 11) && minute == 0) {
+                    horaSeleccionada = String.format("%02d:%02d", hourOfDay, minute)
                     btnHora.text = horaSeleccionada
-
                 } else {
-
-                    Toast.makeText(
-                        this,
-                        "Solo se permiten paseos a las 10:00 o 11:00",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this, "Solo se permiten paseos a las 10:00 o 11:00", Toast.LENGTH_LONG).show()
                 }
             },
-
-            10,
-            0,
-            true
-
+            10, 0, true
         ).show()
     }
 
+    /** Lógica para insertar una nueva reserva o actualizar una existente */
     private fun guardarReserva() {
+        val jinete = etJinete.text.toString().trim()
+        val movil = etMovil.text.toString().trim()
+        val caballo = etCaballo.text.toString().trim()
+        val comentario = etComentario.text.toString().trim()
 
-        val jinete =
-            etJinete.text.toString().trim()
-
-        val movil =
-            etMovil.text.toString().trim()
-
-        val caballo =
-            etCaballo.text.toString().trim()
-
-        val comentario =
-            etComentario.text.toString().trim()
-
-        if (jinete.isEmpty() ||
-            movil.isEmpty() ||
-            caballo.isEmpty() ||
-            fechaSeleccionada.isEmpty() ||
-            horaSeleccionada.isEmpty()
-        ) {
-
-            Toast.makeText(
-                this,
-                "Completa todos los campos obligatorios",
-                Toast.LENGTH_SHORT
-            ).show()
-
+        if (jinete.isEmpty() || movil.isEmpty() || caballo.isEmpty() || fechaSeleccionada.isEmpty() || horaSeleccionada.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos obligatorios", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (movil.length < 9) {
-
-            Toast.makeText(
-                this,
-                "Introduce un móvil válido",
-                Toast.LENGTH_SHORT
-            ).show()
-
+            Toast.makeText(this, "Introduce un móvil válido", Toast.LENGTH_SHORT).show()
             return
         }
 
         val reserva = Reserva(
-
             id = reservaEnEdicion?.id ?: 0,
-
             nombreJinete = jinete,
             movil = movil,
             nombreCaballo = caballo,
@@ -292,140 +213,70 @@ class Main1Activity : AppCompatActivity() {
         )
 
         if (reservaEnEdicion == null) {
-
             viewModel.insertar(reserva)
-
-            Toast.makeText(
-                this,
-                "Reserva guardada correctamente",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            enviarWhatsApp(
-                movil,
-                caballo,
-                fechaSeleccionada,
-                horaSeleccionada
-            )
-
+            Toast.makeText(this, "Reserva guardada correctamente", Toast.LENGTH_SHORT).show()
+            enviarWhatsApp(movil, caballo, fechaSeleccionada, horaSeleccionada)
         } else {
-
             viewModel.actualizar(reserva)
-
-            Toast.makeText(
-                this,
-                "Reserva actualizada correctamente",
-                Toast.LENGTH_SHORT
-            ).show()
-
+            Toast.makeText(this, "Reserva actualizada correctamente", Toast.LENGTH_SHORT).show()
             reservaEnEdicion = null
-
             btnGuardar.text = "Guardar reserva"
         }
-
         limpiarFormulario()
     }
 
+    /** Filtra la lista de reservas por la fecha y hora seleccionadas */
     private fun buscarReservas() {
-
-        if (fechaSeleccionada.isEmpty() ||
-            horaSeleccionada.isEmpty()
-        ) {
-
-            Toast.makeText(
-                this,
-                "Selecciona fecha y hora",
-                Toast.LENGTH_SHORT
-            ).show()
-
+        if (fechaSeleccionada.isEmpty() || horaSeleccionada.isEmpty()) {
+            Toast.makeText(this, "Selecciona fecha y hora", Toast.LENGTH_SHORT).show()
             return
         }
 
-        viewModel.buscarPorFechaYHora(
-            fechaSeleccionada,
-            horaSeleccionada
-        ) { reservas ->
-
+        viewModel.buscarPorFechaYHora(fechaSeleccionada, horaSeleccionada) { reservas ->
             adapter.actualizarLista(reservas)
-
             if (reservas.isEmpty()) {
-
-                Toast.makeText(
-                    this,
-                    "No hay reservas",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "No hay reservas", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    /** Resetea el formulario de entrada */
     private fun limpiarFormulario() {
-
         etJinete.text.clear()
         etMovil.text.clear()
         etCaballo.text.clear()
         etComentario.text.clear()
-
         fechaSeleccionada = ""
         horaSeleccionada = ""
-
         btnFecha.text = "Elegir fecha"
         btnHora.text = "Elegir hora"
-
         reservaEnEdicion = null
     }
 
-    private fun convertirFechaParaMostrar(
-        fechaBD: String
-    ): String {
-
+    /** Convierte la fecha del formato de base de datos (yyyy-MM-dd) al de visualización (dd/MM/yyyy) */
+    private fun convertirFechaParaMostrar(fechaBD: String): String {
         return try {
-
             val fecha = formatoBD.parse(fechaBD)
-
-            if (fecha != null) {
-                formatoMostrar.format(fecha)
-            } else {
-                fechaBD
-            }
-
+            if (fecha != null) formatoMostrar.format(fecha) else fechaBD
         } catch (e: Exception) {
-
             fechaBD
         }
     }
 
-    private fun enviarWhatsApp(
-        movil: String,
-        caballo: String,
-        fecha: String,
-        hora: String
-    ) {
-
-        val fechaMostrar =
-            convertirFechaParaMostrar(fecha)
-
-        val mensaje =
-            "Hola, tu reserva para el paseo con el caballo $caballo el día $fechaMostrar a las $hora está confirmada."
-
-        val url =
-            "https://api.whatsapp.com/send?phone=$movil&text=${Uri.encode(mensaje)}"
-
+    /**
+     * Envía una confirmación de reserva a través de WhatsApp.
+     */
+    private fun enviarWhatsApp(movil: String, caballo: String, fecha: String, hora: String) {
+        val fechaMostrar = convertirFechaParaMostrar(fecha)
+        val mensaje = "Hola, tu reserva para el paseo con el caballo $caballo el día $fechaMostrar a las $hora está confirmada."
+        val url = "https://api.whatsapp.com/send?phone=$movil&text=${Uri.encode(mensaje)}"
+        
         val intent = Intent(Intent.ACTION_VIEW)
-
         intent.data = Uri.parse(url)
-
         try {
-
             startActivity(intent)
-
         } catch (e: Exception) {
-
-            Toast.makeText(
-                this,
-                "WhatsApp no está instalado",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(this, "WhatsApp no está instalado", Toast.LENGTH_SHORT).show()
         }
     }
 }
