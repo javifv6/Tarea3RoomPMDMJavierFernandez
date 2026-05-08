@@ -1,37 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <EditText android:id="@+id/etJinete" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Nombre del jinete"/>
-    <EditText android:id="@+id/etMovil" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Móvil" android:inputType="phone"/>
-    <EditText android:id="@+id/etCaballo" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Nombre del caballo"/>
-    <EditText android:id="@+id/etComentario" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Comentario"/>
-
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-        <Button android:id="@+id/btnFecha" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Elegir Fecha"/>
-        <Button android:id="@+id/btnHora" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Elegir Hora"/>
-    </LinearLayout>
-
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-        <Button android:id="@+id/btnGuardar" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Guardar Reserva"/>
-        <Button android:id="@+id/btnBuscar" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Buscar (F/H)"/>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnAtras"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Volver al Menú Principal"
-        android:layout_marginTop="8dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="16dp"/>
-</LinearLayout>
+        <EditText
+            android:id="@+id/etJinete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del jinete" />
+
+        <EditText
+            android:id="@+id/etMovil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Móvil"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/etCaballo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del caballo" />
+
+        <EditText
+            android:id="@+id/etComentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Comentario"
+            android:minLines="2"
+            android:inputType="textMultiLine" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnFecha"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Elegir fecha" />
+
+            <Button
+                android:id="@+id/btnHora"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Elegir hora" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Guardar reserva" />
+
+            <Button
+                android:id="@+id/btnBuscar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Buscar" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnMostrarTodas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mostrar todas las reservas"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btnAtras"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Volver al menú principal"
+            android:layout_marginTop="8dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

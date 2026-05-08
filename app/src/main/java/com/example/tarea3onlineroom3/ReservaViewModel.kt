@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ReservaViewModel(application: Application) : AndroidViewModel(application) {
+
     private val repository: ReservaRepository
     val todasLasReservas: Flow<List<Reserva>>
 
@@ -17,7 +19,28 @@ class ReservaViewModel(application: Application) : AndroidViewModel(application)
         todasLasReservas = repository.todasLasReservas
     }
 
-    fun insertar(reserva: Reserva) = viewModelScope.launch(Dispatchers.IO) { repository.insertar(reserva) }
-    fun actualizar(reserva: Reserva) = viewModelScope.launch(Dispatchers.IO) { repository.actualizar(reserva) }
-    fun borrar(reserva: Reserva) = viewModelScope.launch(Dispatchers.IO) { repository.borrar(reserva) }
+    fun insertar(reserva: Reserva) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertar(reserva)
+    }
+
+    fun actualizar(reserva: Reserva) = viewModelScope.launch(Dispatchers.IO) {
+        repository.actualizar(reserva)
+    }
+
+    fun borrar(reserva: Reserva) = viewModelScope.launch(Dispatchers.IO) {
+        repository.borrar(reserva)
+    }
+
+    fun buscarPorFechaYHora(
+        fecha: String,
+        hora: String,
+        onResultado: (List<Reserva>) -> Unit
+    ) {
+        viewModelScope.launch {
+            val resultado = withContext(Dispatchers.IO) {
+                repository.buscarPorFechaYHora(fecha, hora)
+            }
+            onResultado(resultado)
+        }
+    }
 }

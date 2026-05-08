@@ -9,11 +9,19 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReservaDao {
-    @Insert fun insertar(reserva: Reserva)
-    @Update fun actualizar(reserva: Reserva)
-    @Delete fun borrar(reserva: Reserva)
+
+    @Insert
+    fun insertar(reserva: Reserva)
+
+    @Update
+    fun actualizar(reserva: Reserva)
+
+    @Delete
+    fun borrar(reserva: Reserva)
+
     @Query("SELECT * FROM tabla_reservas ORDER BY fecha DESC, hora DESC")
     fun obtenerTodas(): Flow<List<Reserva>>
-    @Query("SELECT * FROM tabla_reservas WHERE fecha = :fechaBuscada AND hora = :horaBuscada")
+
+    @Query("SELECT * FROM tabla_reservas WHERE fecha = :fechaBuscada AND hora = :horaBuscada ORDER BY fecha DESC, hora DESC")
     fun buscarPorFechaYHora(fechaBuscada: String, horaBuscada: String): List<Reserva>
 }

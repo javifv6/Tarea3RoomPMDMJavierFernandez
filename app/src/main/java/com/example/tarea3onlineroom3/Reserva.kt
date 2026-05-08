@@ -10,7 +10,7 @@ data class Reserva(
     val nombreJinete: String,
     val movil: String,
     val nombreCaballo: String,
-    val fecha: String,
-    val hora: String,
-    val comentario: String,
+    val fecha: String, // Formato yyyy-MM-dd para ordenar correctamente
+    val hora: String,  // Solo 10:00 o 11:00
+    val comentario: String
 )

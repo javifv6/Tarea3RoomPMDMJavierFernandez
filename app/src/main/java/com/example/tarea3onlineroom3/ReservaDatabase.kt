@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Reserva::class], version = 1, exportSchema = false)
+@Database(entities = [Reserva::class], version = 2, exportSchema = false)
 abstract class ReservaDatabase : RoomDatabase() {
 
     abstract fun reservaDao(): ReservaDao
@@ -19,8 +19,11 @@ abstract class ReservaDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     ReservaDatabase::class.java,
-                    "hipica_database",
-                ).build()
+                    "hipica_database"
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+
                 INSTANCE = instance
                 instance
             }

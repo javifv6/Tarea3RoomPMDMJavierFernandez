@@ -1,5 +1,6 @@
 package com.example.tarea3onlineroom3
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -13,7 +14,6 @@ class Main2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Asegúrate de haber pegado el XML que te pasé en activity_main2.xml
         setContentView(R.layout.activity_main2)
 
         // Inicializamos Firebase Auth
@@ -25,6 +25,7 @@ class Main2Activity : AppCompatActivity() {
         val btnRegistro = findViewById<Button>(R.id.btnRegistro)
         val btnAtras = findViewById<Button>(R.id.btnAtrasFirebase)
 
+        // Lógica de Inicio de Sesión
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString()
             val password = etPassword.text.toString()
@@ -33,6 +34,9 @@ class Main2Activity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "¡Login correcto!", Toast.LENGTH_SHORT).show()
+                            // Redirección a la pantalla de gestión de IA
+                            startActivity(Intent(this, HerramientasActivity::class.java))
+                            finish()
                         } else {
                             Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -42,6 +46,7 @@ class Main2Activity : AppCompatActivity() {
             }
         }
 
+        // Lógica de Registro de Usuario
         btnRegistro.setOnClickListener {
             val email = etEmail.text.toString()
             val password = etPassword.text.toString()
@@ -50,6 +55,9 @@ class Main2Activity : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "¡Usuario registrado!", Toast.LENGTH_SHORT).show()
+                            // Redirección a la pantalla de gestión de IA tras el registro
+                            startActivity(Intent(this, HerramientasActivity::class.java))
+                            finish()
                         } else {
                             Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -59,6 +67,7 @@ class Main2Activity : AppCompatActivity() {
             }
         }
 
+        // Botón para volver al menú principal
         btnAtras.setOnClickListener { finish() }
     }
 }
