@@ -55,10 +55,14 @@ Gestor de herramientas en la nube sincronizado para cada usuario:
 2. **Android Studio Meerkat** (o superior): Recomendado para total compatibilidad.
 3. **google-services.json**: Asegúrate de tener el archivo de configuración de tu proyecto Firebase en la carpeta `app/`.
 
-### Usuario de prueba
+### Usuario1 de prueba
 Para probar el Ejercicio 2 puedes registrar un usuario nuevo, o acceder con este que ya está enlazado a Firebase:
 * **Email:** test@test.com
-* **Contraseña:** 123456  
+* **Contraseña:** 123456
+
+### Usuario2 de prueba
+* **Email:** user2@user2.com
+* **Contraseña:** 123456
 
 ## 🖼️ Capturas de Pantalla
 
@@ -82,10 +86,15 @@ Para probar el Ejercicio 2 puedes registrar un usuario nuevo, o acceder con este
 ![Login](Capturas/6login.png) 
 * **Lectura/Escritura en Nube:** Inserción y lectura en tiempo real de las herramientas guardadas en Firestore.
 ![ListaIA](Capturas/7listaia.png)
+* ![ListaIA](Capturas/7-1listaia.png)
 * **Consola Firebase (Usuarios):** Evidencia en el backend del registro exitoso del usuario de prueba.
 ![Firebase](Capturas/8firebase.png)
 * **Consola Firebase (Base de datos):** Evidencia en el backend de los documentos guardados, verificando la estructura de datos (ID, nombre, categoría y UID del usuario).
 ![Firestore](Capturas/9firestore.png)
 
 
+
+## Enlace github
+
+https://github.com/javifv6/Tarea3RoomPMDMJavierFernandez.git
 ---
