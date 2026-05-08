@@ -22,6 +22,7 @@ class Main1Activity : AppCompatActivity() {
     private lateinit var adapter: ReservaAdapter
     private var fechaSeleccionada = ""
     private var horaSeleccionada = ""
+    private var reservaEnEdicion: Reserva? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +38,29 @@ class Main1Activity : AppCompatActivity() {
         val btnBuscar = findViewById<Button>(R.id.btnBuscar)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         val btnAtras = findViewById<Button>(R.id.btnAtras)
-        btnAtras.setOnClickListener { finish() } // Cierra esta pantalla y vuelve a la anterior
 
-        adapter = ReservaAdapter(emptyList()) { reserva -> viewModel.borrar(reserva) }
+        btnAtras.setOnClickListener { finish() }
+
+        // Configuración del adaptador con las funciones Borrar y Editar
+        adapter = ReservaAdapter(emptyList(),
+            onBorrarClick = { reserva -> viewModel.borrar(reserva) },
+            onEditarClick = { reserva ->
+                reservaEnEdicion = reserva
+                etJinete.setText(reserva.nombreJinete)
+                etMovil.setText(reserva.movil)
+                etCaballo.setText(reserva.nombreCaballo)
+                etComentario.setText(reserva.comentario)
+                fechaSeleccionada = reserva.fecha
+                horaSeleccionada = reserva.hora
+                btnFecha.text = fechaSeleccionada
+                btnHora.text = horaSeleccionada
+                btnGuardar.text = "Actualizar Reserva"
+            }
+        )
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // Observar base de datos
         lifecycleScope.launch {
             viewModel.todasLasReservas.collect { reservas ->
                 adapter.actualizarLista(reservas)
@@ -69,8 +86,10 @@ class Main1Activity : AppCompatActivity() {
         btnGuardar.setOnClickListener {
             val movil = etMovil.text.toString()
             val caballo = etCaballo.text.toString()
+
             if (etJinete.text.isNotEmpty() && movil.isNotEmpty() && fechaSeleccionada.isNotEmpty() && horaSeleccionada.isNotEmpty()) {
                 val reserva = Reserva(
+                    id = reservaEnEdicion?.id ?: 0, // Mantiene el ID si estamos editando
                     nombreJinete = etJinete.text.toString(),
                     movil = movil,
                     nombreCaballo = caballo,
@@ -78,8 +97,21 @@ class Main1Activity : AppCompatActivity() {
                     hora = horaSeleccionada,
                     comentario = etComentario.text.toString()
                 )
-                viewModel.insertar(reserva)
-                enviarWhatsApp(movil, caballo, fechaSeleccionada, horaSeleccionada)
+
+                if (reservaEnEdicion == null) {
+                    viewModel.insertar(reserva)
+                    enviarWhatsApp(movil, caballo, fechaSeleccionada, horaSeleccionada)
+                } else {
+                    viewModel.actualizar(reserva)
+                    reservaEnEdicion = null
+                    btnGuardar.text = "Guardar Reserva"
+                    etJinete.text.clear()
+                    etMovil.text.clear()
+                    etCaballo.text.clear()
+                    etComentario.text.clear()
+                    btnFecha.text = "Elegir Fecha"
+                    btnHora.text = "Elegir Hora"
+                }
             } else {
                 Toast.makeText(this, "Rellena los datos básicos, fecha y hora", Toast.LENGTH_SHORT).show()
             }

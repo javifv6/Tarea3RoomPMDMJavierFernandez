@@ -9,13 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ReservaAdapter(
     private var reservas: List<Reserva>,
-    private val onBorrarClick: (Reserva) -> Unit
+    private val onBorrarClick: (Reserva) -> Unit,
+    private val onEditarClick: (Reserva) -> Unit
 ) : RecyclerView.Adapter<ReservaAdapter.ReservaViewHolder>() {
 
     class ReservaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvFechaHora: TextView = view.findViewById(R.id.tvFechaHora)
         val tvJineteCaballo: TextView = view.findViewById(R.id.tvJineteCaballo)
         val btnBorrar: Button = view.findViewById(R.id.btnBorrar)
+        val btnEditar: Button = view.findViewById(R.id.btnEditar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReservaViewHolder {
@@ -27,7 +29,9 @@ class ReservaAdapter(
         val reserva = reservas[position]
         holder.tvFechaHora.text = "${reserva.fecha} - ${reserva.hora}"
         holder.tvJineteCaballo.text = "Jinete: ${reserva.nombreJinete} | Caballo: ${reserva.nombreCaballo}"
+
         holder.btnBorrar.setOnClickListener { onBorrarClick(reserva) }
+        holder.btnEditar.setOnClickListener { onEditarClick(reserva) }
     }
 
     override fun getItemCount() = reservas.size
