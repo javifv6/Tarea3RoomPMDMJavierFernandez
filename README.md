@@ -56,16 +56,14 @@ Gestor de herramientas en la nube sincronizado para cada usuario:
 3. **google-services.json**: Asegúrate de tener el archivo de configuración de tu proyecto Firebase en la carpeta `app/`.
 ---
 
-##  ️ Capturas de Pantalla
+## 🖼️ Capturas de Pantalla
 
-### Menu Principal
-![Menú Principal](capturas/1menu_principal.png)
-
+### Menú Principal
+![Menú Principal](Capturas/1menu_principal.png)
 
 ### Ejercicio 1: Reservas Hípica
-
-![Creación y Lista](capturas/2creacion_lista.png)
-![Validaciones](capturas/3validaciones.png)
-![Búsqueda](capturas/4busqueda.png)
-![Búsqueda](capturas/4-1busqueda.png)
-![WhatsApp](capturas/5whatsapp.png)
+![Creación y Lista](Capturas/2creacion_lista.png)
+![Validaciones](Capturas/3validaciones.png)
+![Búsqueda](Capturas/4busqueda.png)
+![Resultado Búsqueda](Capturas/4-1busqueda.png)
+![WhatsApp](Capturas/5whatsapp.png)
